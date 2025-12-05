@@ -1,0 +1,9 @@
+
+En este proyecto usé la IA como apoyo,sobre todo como parte del diseño ya que es el proceso mas largo y
+Me ayudó a:
+- Entender mejor MVVM, Compose y Firebase.
+- Encontrar y corregir errores en mi código mas que nada en las logica o enlazes entre archivos y llamadas de varibles.
+- Mejorar el diseño de las pantallas.
+- Redactar explicaciones para los archivos del proyecto.
+
+La IA solo me dio ideas, guía y recomendaciones para hacerlo mejor.

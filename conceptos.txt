@@ -42,4 +42,4 @@ En esta app se implementa así:
 - Actualizar: Desde el formulario, se pueden editar los datos de un producto.
 - Eliminar: Cada tarjeta tiene un botón para borrar el producto.
 
-Este conjunto de
+Este conjunto de acciones permite manejar completamente la información del usuario.
