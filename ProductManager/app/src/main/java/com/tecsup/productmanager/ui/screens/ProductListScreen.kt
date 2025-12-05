@@ -34,7 +34,7 @@ fun ProductListScreen(
                         viewModelAuth.logout()
                         onLogout()
                     }) {
-                        Text("Cerrar Sesión")
+                        Text("Cerrar Sesión", color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
             )
