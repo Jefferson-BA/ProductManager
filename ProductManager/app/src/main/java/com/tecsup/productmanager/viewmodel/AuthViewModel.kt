@@ -49,4 +49,9 @@ class AuthViewModel(
             }
         }
     }
+
+    fun logout() {
+        repo.logout()
+    }
+
 }

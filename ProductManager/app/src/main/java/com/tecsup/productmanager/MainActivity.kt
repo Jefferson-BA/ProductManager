@@ -8,9 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.google.firebase.FirebaseApp
 import com.tecsup.productmanager.ui.screens.*
@@ -33,6 +31,7 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
 
+                    // Verificar si hay usuario logueado
                     val userId = authVM.currentUserId()
                     val startDestination = if (userId == null) "login" else "products"
 
@@ -68,31 +67,34 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // LISTA DE PRODUCTOS
+                        // PRODUCT LIST (PRINCIPAL)
                         composable("products") {
 
                             val uid = authVM.currentUserId()
 
                             LaunchedEffect(uid) {
-                                if (uid != null) {
-                                    productVM.loadProducts(uid)
-                                }
+                                if (uid != null) productVM.loadProducts(uid)
                             }
 
                             ProductListScreen(
                                 viewModel = productVM,
+                                viewModelAuth = authVM,
                                 onCreateClick = {
                                     navController.navigate("productForm")
                                 },
                                 onEditClick = { product ->
                                     navController.navigate("productForm/${product.id}")
+                                },
+                                onLogout = {
+                                    navController.navigate("login") {
+                                        popUpTo("products") { inclusive = true }
+                                    }
                                 }
                             )
                         }
 
                         // CREAR PRODUCTO
                         composable("productForm") {
-
                             ProductFormScreen(
                                 viewModel = productVM,
                                 product = null,
