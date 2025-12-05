@@ -1,0 +1,45 @@
+MVVM (Model - View - ViewModel)
+MVVM es una forma de organizar una aplicación para que el código esté más limpio y separado.
+La idea es dividirla en tres partes:
+
+- Model: Aquí están los datos, como la clase Product.
+- View: Son las pantallas que el usuario ve. En este proyecto son Login, Register, Lista de Productos y Formulario.
+- ViewModel: Contiene la lógica. Habla con Firebase, valida datos y envía la información a las pantallas.
+
+Este patrón ayuda a que el código sea más fácil de entender y mantener.
+
+Firebase Authentication
+Firebase Auth permite registrar y loguear usuarios sin tener que crear sistemas complicados.
+En esta app se usa para:
+- Crear cuentas con email y contraseña
+- Iniciar sesión
+- Mostrar errores claros si algo falla
+- Obtener el UID del usuario para identificar sus productos
+
+Firestore
+Firestore es una base de datos que guarda información en tiempo real.
+En este proyecto:
+- Tenemos una colección llamada "products"
+- Cada producto guarda: id, nombre, precio, stock, categoría y el userId del dueño
+- Con addSnapshotListener la app recibe cambios automáticamente, sin recargar
+- Cada usuario ve solo sus productos porque se filtran por su UID
+
+Jetpack Compose
+Compose es una forma moderna de crear pantallas en Android escribiendo código más simple.
+En este proyecto usamos:
+- Scaffold para la estructura general
+- LazyColumn para mostrar la lista de productos
+- TextField y OutlinedTextField para los formularios
+- Cards, botones y FABs para la interfaz
+- Estados como remember y collectAsState para actualizar la UI automáticamente
+
+CRUD
+CRUD significa Crear, Leer, Actualizar y Eliminar.
+En esta app se implementa así:
+
+- Crear: El usuario llena el formulario y se guarda un nuevo producto en Firestore.
+- Leer: La pantalla principal muestra todos sus productos en tiempo real.
+- Actualizar: Desde el formulario, se pueden editar los datos de un producto.
+- Eliminar: Cada tarjeta tiene un botón para borrar el producto.
+
+Este conjunto de
