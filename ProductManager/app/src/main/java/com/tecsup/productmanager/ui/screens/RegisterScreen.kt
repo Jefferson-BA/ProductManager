@@ -1,4 +1,19 @@
 package com.tecsup.productmanager.ui.screens
 
-class RegisterScreen {
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.tecsup.productmanager.viewmodel.AuthViewModel
+
+@Composable
+fun RegisterScreen(
+    viewModel: AuthViewModel,
+    onSuccess: () -> Unit
+) {
+    val state by viewModel.state.collectAsState()
+
+    if (state.success) {
+        onSuccess()
+    }
+
 }
