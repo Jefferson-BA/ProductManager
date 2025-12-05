@@ -3,45 +3,131 @@ package com.tecsup.productmanager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.tecsup.productmanager.ui.theme.ProductManagerTheme
+import androidx.activity.viewModels
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.google.firebase.FirebaseApp
+import com.tecsup.productmanager.ui.screens.*
+import com.tecsup.productmanager.viewmodel.AuthViewModel
+import com.tecsup.productmanager.viewmodel.ProductViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val authVM: AuthViewModel by viewModels()
+    private val productVM: ProductViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        FirebaseApp.initializeApp(this)
+
         setContent {
-            ProductManagerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            MaterialTheme {
+                Surface {
+
+                    val navController = rememberNavController()
+
+                    val userId = authVM.currentUserId()
+                    val startDestination = if (userId == null) "login" else "products"
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination
+                    ) {
+
+                        // LOGIN
+                        composable("login") {
+                            LoginScreen(
+                                viewModel = authVM,
+                                onSuccess = {
+                                    navController.navigate("products") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                },
+                                onRegisterClick = {
+                                    navController.navigate("register")
+                                }
+                            )
+                        }
+
+                        // REGISTER
+                        composable("register") {
+                            RegisterScreen(
+                                viewModel = authVM,
+                                onSuccess = {
+                                    navController.navigate("products") {
+                                        popUpTo("register") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        // LISTA DE PRODUCTOS
+                        composable("products") {
+
+                            val uid = authVM.currentUserId()
+
+                            LaunchedEffect(uid) {
+                                if (uid != null) {
+                                    productVM.loadProducts(uid)
+                                }
+                            }
+
+                            ProductListScreen(
+                                viewModel = productVM,
+                                onCreateClick = {
+                                    navController.navigate("productForm")
+                                },
+                                onEditClick = { product ->
+                                    navController.navigate("productForm/${product.id}")
+                                }
+                            )
+                        }
+
+                        // CREAR PRODUCTO
+                        composable("productForm") {
+
+                            ProductFormScreen(
+                                viewModel = productVM,
+                                product = null,
+                                userId = authVM.currentUserId() ?: "",
+                                onSaved = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+
+                        // EDITAR PRODUCTO
+                        composable(
+                            route = "productForm/{id}",
+                            arguments = listOf(navArgument("id") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+
+                            val products by productVM.products.collectAsState()
+                            val product = products.find { it.id == id }
+
+                            ProductFormScreen(
+                                viewModel = productVM,
+                                product = product,
+                                userId = authVM.currentUserId() ?: "",
+                                onSaved = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ProductManagerTheme {
-        Greeting("Android")
     }
 }

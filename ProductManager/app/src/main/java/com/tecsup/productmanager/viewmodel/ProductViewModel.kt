@@ -18,8 +18,11 @@ class ProductViewModel(
 
     fun saveProduct(product: Product) {
         viewModelScope.launch {
-            if (product.id.isEmpty()) repo.addProduct(product)
-            else repo.updateProduct(product)
+            if (product.id.isEmpty()) {
+                repo.addProduct(product)
+            } else {
+                repo.updateProduct(product)
+            }
         }
     }
 

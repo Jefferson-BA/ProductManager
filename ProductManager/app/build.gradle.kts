@@ -63,5 +63,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
 
 }

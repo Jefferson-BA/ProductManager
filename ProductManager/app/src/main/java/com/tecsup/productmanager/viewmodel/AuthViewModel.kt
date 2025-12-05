@@ -14,16 +14,20 @@ data class AuthState(
 )
 
 class AuthViewModel(
-    private val repo: AuthRepository = AuthRepository()
+    val repo: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
     val state: StateFlow<AuthState> get() = _state
 
+    fun currentUserId(): String? = repo.currentUserId()
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _state.value = AuthState(loading = true)
+
             val result = repo.login(email, password)
+
             if (result.isSuccess) {
                 _state.value = AuthState(success = true)
             } else {
@@ -35,7 +39,9 @@ class AuthViewModel(
     fun register(email: String, password: String) {
         viewModelScope.launch {
             _state.value = AuthState(loading = true)
+
             val result = repo.register(email, password)
+
             if (result.isSuccess) {
                 _state.value = AuthState(success = true)
             } else {
